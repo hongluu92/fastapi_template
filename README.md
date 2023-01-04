@@ -1,5 +1,4 @@
 # api_template
-
 This project was generated using fastapi_template.
 
 ## Poetry
@@ -42,70 +41,6 @@ But you have to rebuild image every time you modify `poetry.lock` or `pyproject.
 ```bash
 docker-compose -f deploy/docker-compose.yml --project-directory . build
 ```
-
-## Project structure
-
-```bash
-$ tree "api_template"
-api_template
-├── conftest.py  # Fixtures for all tests.
-├── db  # module contains db configurations
-│   ├── repositories  # Data Access Objects. Contains different classes to interact with database.
-│   └── models  # Package contains different models for ORMs.
-├── __main__.py  # Startup script. Starts uvicorn.
-├── services  # Package for different external services such as rabbit or redis etc.
-├── settings.py  # Main configuration settings for project.
-├── static  # Static content.
-├── tests  # Tests for project.
-└── web  # Package contains web server. Handlers, startup config.
-    ├── api  # Package with all handlers.
-    │   └── router.py  # Main router.
-    ├── application.py  # FastAPI application configuration.
-    └── lifetime.py  # Contains actions to perform on startup and shutdown.
-```
-
-## Configuration
-
-This application can be configured with environment variables.
-
-You can create `.env` file in the root directory and place all
-environment variables here.
-
-All environment variabels should start with "STOCKVN_" prefix.
-
-For example if you see in your "api_template/settings.py" a variable named like
-`random_parameter`, you should provide the "STOCKVN_RANDOM_PARAMETER"
-variable to configure the value. This behaviour can be changed by overriding `env_prefix` property
-in `api_template.settings.Settings.Config`.
-
-An exmaple of .env file:
-```bash
-STOCKVN_RELOAD="True"
-STOCKVN_PORT="8000"
-STOCKVN_ENVIRONMENT="dev"
-```
-
-You can read more about BaseSettings class here: https://pydantic-docs.helpmanual.io/usage/settings/
-
-## Pre-commit
-
-To install pre-commit simply run inside the shell:
-```bash
-pre-commit install
-```
-
-pre-commit is very useful to check your code before publishing it.
-It's configured using .pre-commit-config.yaml file.
-
-By default it runs:
-* black (formats your code);
-* mypy (validates types);
-* isort (sorts imports in all files);
-* flake8 (spots possibe bugs);
-* yesqa (removes useless `# noqa` comments).
-
-
-You can read more about pre-commit here: https://pre-commit.com/
 
 ## Migrations
 
