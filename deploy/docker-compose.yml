@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: api_template:${STOCKVN_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      STOCKVN_HOST: 0.0.0.0
+      STOCKVN_DB_HOST: api_template-db
+      STOCKVN_DB_PORT: 5432
+      STOCKVN_DB_USER: api_template
+      STOCKVN_DB_PASS: api_template
+      STOCKVN_DB_BASE: api_template
+
+  db:
+    image: postgres:13.8-bullseye
+    hostname: api_template-db
+    environment:
+      POSTGRES_PASSWORD: "api_template"
+      POSTGRES_USER: "api_template"
+      POSTGRES_DB: "api_template"
+    volumes:
+    - api_template-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U api_template
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: api_template:${STOCKVN_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      STOCKVN_DB_HOST: api_template-db
+      STOCKVN_DB_PORT: 5432
+      STOCKVN_DB_USER: api_template
+      STOCKVN_DB_PASS: api_template
+      STOCKVN_DB_BASE: api_template
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
+volumes:
+  api_template-db-data:
+    name: api_template-db-data
